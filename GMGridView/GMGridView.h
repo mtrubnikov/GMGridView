@@ -76,6 +76,11 @@ typedef enum
 @property (nonatomic, getter=isEditing) BOOL editing; // Default is NO - When set to YES, all gestures are disabled and delete buttons shows up on cells
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated;
 
+//Selection Mode
+@property (nonatomic, getter=isSelecting) BOOL selecting; //Default is NO - When set to YES, all gestures are disabled, taps are used to select items, selection marks shows up on cells
+
+@property (strong, nonatomic) NSMutableIndexSet *selectedItems; //selectedItems
+
 // Customizing Options
 @property (nonatomic, gm_weak) IBOutlet UIView *mainSuperView;        // Default is self
 @property (nonatomic) GMGridViewStyle style;                          // Default is GMGridViewStyleSwap
@@ -84,6 +89,9 @@ typedef enum
 @property (nonatomic) UIEdgeInsets minEdgeInsets;                     // Default is (5, 5, 5, 5)
 @property (nonatomic) CFTimeInterval minimumPressDuration;            // Default is 0.2; if set to 0, the view wont be scrollable
 @property (nonatomic) BOOL showFullSizeViewWithAlphaWhenTransforming; // Default is YES - not working right now
+@property (nonatomic) BOOL showsVerticalScrollIndicator;              // Default is YES
+@property (nonatomic) BOOL showsHorizontalScrollIndicator;            // Default is YES
+
 @property (nonatomic) BOOL enableEditOnLongPress;                     // Default is NO
 @property (nonatomic) BOOL disableEditOnEmptySpaceTap;                // Default is NO
 
@@ -143,6 +151,8 @@ typedef enum
 - (void)GMGridView:(GMGridView *)gridView didTapOnItemAtIndex:(NSInteger)position;
 
 @optional
+- (void)GMGridView:(GMGridView *)gridView selectedItemAtIndex:(NSInteger)position;
+- (void)GMGridView:(GMGridView *)gridView deselectedItemAtIndex:(NSInteger)position;
 // Tap on space without any items
 - (void)GMGridViewDidTapOnEmptySpace:(GMGridView *)gridView;
 // Called when the delete-button has been pressed. Required to enable editing mode.

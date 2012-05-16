@@ -34,6 +34,10 @@
 @property (nonatomic, strong) UIView *contentView;         // The contentView - default is nil
 @property (nonatomic, strong) UIImage *deleteButtonIcon;   // Delete button image
 @property (nonatomic) CGPoint deleteButtonOffset;          // Delete button offset relative to the origin
+@property (nonatomic, strong) UIImage *selectedIcon;       // Selected icon image
+@property (nonatomic, strong) UIImage *deselectedIcon;     // Deselected icon image
+@property (nonatomic) CGPoint selectedIconOffset;          // Selected icon offset relative to the origin
+@property (nonatomic, getter=isSelected) BOOL selected;    // Default NO, YES if the cell is selected
 @property (nonatomic, strong) NSString *reuseIdentifier;
 @property (nonatomic, getter=isHighlighted) BOOL highlighted;
 

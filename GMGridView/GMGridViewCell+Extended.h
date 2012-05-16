@@ -50,8 +50,13 @@ typedef void (^GMGridViewCellDeleteBlock)(GMGridViewCell*);
 
 @property (nonatomic, copy) GMGridViewCellDeleteBlock deleteBlock;
 
+@property (nonatomic, getter=isSelecting) BOOL selecting;
+
 @property (nonatomic, assign) UIViewAutoresizing defaultFullsizeViewResizingMask;
 @property (nonatomic, gm_weak) UIButton *deleteButton;
+
+@property (nonatomic, gm_weak) UIImageView *selectionIndicator;
+
 
 - (void)prepareForReuse;
 - (void)shake:(BOOL)on; // shakes the contentView only, not the fullsize one

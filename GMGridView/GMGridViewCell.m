@@ -56,6 +56,12 @@
 @synthesize deleteBlock = _deleteBlock;
 @synthesize deleteButtonIcon = _deleteButtonIcon;
 @synthesize deleteButtonOffset;
+@synthesize selectedIcon = _selectedIcon;
+@synthesize deselectedIcon = _deselectedIcon;
+@synthesize selectionIndicator = _selectionIndicator;
+@synthesize selectedIconOffset = _selectedIconOffset;
+@synthesize selecting = _selecting;
+@synthesize selected = _selected;
 @synthesize reuseIdentifier;
 @synthesize highlighted;
 
@@ -74,6 +80,10 @@
     {
         self.autoresizesSubviews = !YES;
         self.editing = NO;
+        self.selecting = NO;
+        self.selected = NO;
+        self.selectedIcon = nil;
+        self.deselectedIcon = nil;
         
         UIButton *deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.deleteButton = deleteButton;
@@ -83,6 +93,12 @@
         self.deleteButton.alpha = 0;
         [self addSubview:deleteButton];
         [deleteButton addTarget:self action:@selector(actionDelete) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIImageView *selectionIndicator = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+        self.selectionIndicator = selectionIndicator;
+        self.selectionIndicator.alpha = 0;
+        self.selectionIndicator.image = nil;
+        [self addSubview:selectionIndicator];
     }
     return self;
 }
@@ -145,6 +161,7 @@
     [self addSubview:self.contentView];
     
     [self bringSubviewToFront:self.deleteButton];
+    [self bringSubviewToFront:self.selectionIndicator];
 }
 
 - (void)setFullSizeView:(UIView *)fullSizeView
@@ -169,6 +186,7 @@
     [self addSubview:_fullSizeView];
     
     [self bringSubviewToFront:self.deleteButton];
+    [self bringSubviewToFront:self.selectionIndicator];
 }
 
 - (void)setFullSize:(CGSize)fullSize
@@ -201,6 +219,42 @@
 		
         self.contentView.userInteractionEnabled = !editing;
         [self shakeStatus:editing];
+    }
+}
+
+- (void)setSelecting:(BOOL)selecting
+{
+    _selecting = selecting;
+    
+    [self.selectionIndicator setImage:self.deselectedIcon];
+    
+    if(self.deselectedIcon)
+        [UIView animateWithDuration:0.2
+                              delay:0
+                            options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationCurveEaseOut
+                         animations:^{
+                             self.selectionIndicator.alpha = selecting ? 1 : 0;
+                         }
+                         completion:nil];
+                         
+    self.contentView.userInteractionEnabled = !selecting;
+}
+
+- (void)setSelected:(BOOL)selected
+{
+    if(selected)
+    {
+        [self.selectionIndicator setImage:self.selectedIcon];
+        self.selectionIndicator.frame = CGRectMake(self.selectionIndicator.frame.origin.x, 
+                                                       self.selectionIndicator.frame.origin.y, 
+                                                       self.selectedIcon.size.width, 
+                                                       self.selectedIcon.size.height);
+    } else {
+        [self.selectionIndicator setImage:self.deselectedIcon];
+        self.selectionIndicator.frame = CGRectMake(self.selectionIndicator.frame.origin.x, 
+                                                       self.selectionIndicator.frame.origin.y, 
+                                                       self.deselectedIcon.size.width, 
+                                                       self.deselectedIcon.size.height);
     }
 }
 
@@ -261,6 +315,63 @@
 	}];
 }
 
+- (void)setSelectedIconOffset:(CGPoint)offset
+{
+    self.selectionIndicator.frame = CGRectMake(offset.x, 
+                                               offset.y, 
+                                               self.selectionIndicator.frame.size.width, 
+                                               self.selectionIndicator.frame.size.height);
+}
+
+- (CGPoint)selectedIconOffset
+{
+    return self.selectionIndicator.frame.origin;
+}
+
+- (void)setDeselectedIcon:(UIImage *)deselectedIcon
+{
+    _deselectedIcon = deselectedIcon;
+    
+    if(self.isSelecting && !self.isSelected)
+    {
+        [self.selectionIndicator setImage:deselectedIcon];
+        
+        if(deselectedIcon)
+        {
+            self.selectionIndicator.frame = CGRectMake(self.selectionIndicator.frame.origin.x, 
+                                                       self.selectionIndicator.frame.origin.y, 
+                                                       deselectedIcon.size.width, 
+                                                       deselectedIcon.size.height);
+        } else {
+            self.selectionIndicator.frame = CGRectMake(self.selectionIndicator.frame.origin.x, 
+                                                       self.selectionIndicator.frame.origin.y, 
+                                                       20, 
+                                                       20);
+        }
+    }
+}
+- (void)setSelectedIcon:(UIImage *)selectedIcon
+{
+    _selectedIcon = selectedIcon;
+    
+    if(self.isSelecting && self.isSelected)
+    {
+        [self.selectionIndicator setImage:selectedIcon];
+        
+        if(selectedIcon)
+        {
+            self.selectionIndicator.frame = CGRectMake(self.selectionIndicator.frame.origin.x, 
+                                                       self.selectionIndicator.frame.origin.y, 
+                                                       selectedIcon.size.width, 
+                                                       selectedIcon.size.height);
+        } else {
+            self.selectionIndicator.frame = CGRectMake(self.selectionIndicator.frame.origin.x, 
+                                                       self.selectionIndicator.frame.origin.y, 
+                                                       20, 
+                                                       20);
+        }
+    }
+}
 
 //////////////////////////////////////////////////////////////
 #pragma mark Private methods
@@ -283,6 +394,8 @@
     self.fullSize = CGSizeZero;
     self.fullSizeView = nil;
     self.editing = NO;
+    self.selecting = NO;
+    self.selected = NO;
     self.deleteBlock = nil;
 }
 
