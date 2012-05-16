@@ -1393,8 +1393,8 @@ static const UIViewAnimationOptions kDefaultAnimationOptions = UIViewAnimationOp
         CGSize pageSize =  CGSizeMake(self.bounds.size.width  - self.contentInset.left - self.contentInset.right, 
                                            self.bounds.size.height - self.contentInset.top  - self.contentInset.bottom);
         
-        CGFloat pageX = ceilf(point.x / pageSize.width);
-        CGFloat pageY = ceilf(point.y / pageSize.height);
+        CGFloat pageX = roundf(point.x / pageSize.width);
+        CGFloat pageY = roundf(point.y / pageSize.height);
         
         originScroll = CGPointMake(pageX * pageSize.width, 
                                    pageY *pageSize.height);
