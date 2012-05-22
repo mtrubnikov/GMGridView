@@ -469,7 +469,7 @@ static const UIViewAnimationOptions kDefaultAnimationOptions = UIViewAnimationOp
             [cell setSelecting:selecting];
         }
         _selecting = selecting;
-        [self reloadData];
+        //[self reloadData];
     }
 }
 
